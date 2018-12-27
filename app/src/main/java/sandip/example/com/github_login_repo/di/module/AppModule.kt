@@ -9,8 +9,10 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import sandip.example.com.github_login_repo.data.GithubDao
 import sandip.example.com.github_login_repo.database.GithubDatabase
 import sandip.example.com.github_login_repo.remote.WebServices
+import sandip.example.com.github_login_repo.repo.AppRepository
 import sandip.example.com.github_login_repo.utils.authUtils.WebServiceHolder
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
 import sandip.example.com.github_login_repo.utils.remoteUtils.LiveDataCallAdapterFactory
@@ -24,7 +26,7 @@ class AppModule {
     @Singleton
     fun provideDatabaseModule(application: Application): GithubDatabase {
         return Room.databaseBuilder(application,
-            GithubDatabase::class.java, "gitRepoRoomDatabase.db")
+            GithubDatabase::class.java, "gitRepoRoomDatabase")
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -42,7 +44,14 @@ class AppModule {
     @Provides
     fun provideExecutorModule(): AppExecutors = AppExecutors()
 
+    @Provides
+    @Singleton
+    fun provideGithubDao(database: GithubDatabase) = database.githubDao()
 
+
+    @Provides
+    @Singleton
+    fun provideAppRepository(webservice: WebServices, executor: AppExecutors, dao: GithubDao) =  AppRepository(webservice, executor, dao)
 
     @Provides
     fun provideRetrofitModule(okHttpClient: OkHttpClient): Retrofit {
