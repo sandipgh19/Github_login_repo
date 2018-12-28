@@ -1,9 +1,15 @@
 package sandip.example.com.github_login_repo.viewModel
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import android.databinding.Observable
 import android.databinding.PropertyChangeRegistry
+import sandip.example.com.github_login_repo.objects.LoginResponse
 import sandip.example.com.github_login_repo.repo.AppRepository
+import sandip.example.com.github_login_repo.utils.remoteUtils.AbsentedLiveData
+import sandip.example.com.github_login_repo.utils.remoteUtils.Resource
 import javax.inject.Inject
 
 class LoginViewModel @Inject constructor(
@@ -37,5 +43,24 @@ class LoginViewModel @Inject constructor(
      */
     fun notifyPropertyChanged(fieldId: Int) {
         callbacks.notifyCallbacks(this, fieldId, null)
+    }
+
+    var result: LiveData<Resource<LoginResponse>>
+    var userName = MutableLiveData<String>()
+    var password = MutableLiveData<String>()
+
+    fun login(userName: String, password: String) {
+        this.userName.value = userName
+        this.password.value = password
+    }
+
+    init {
+        result = Transformations.switchMap(password) {
+            userName
+            when (password.value) {
+                null -> AbsentedLiveData.create()
+                else -> repo.authentication(username = userName.value!!, password = password.value!!)
+            }
+        }
     }
 }

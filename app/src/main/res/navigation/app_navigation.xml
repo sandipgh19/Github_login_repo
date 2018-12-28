@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            app:startDestination="@id/loginFragment">
+
+    <fragment
+            android:id="@+id/loginFragment"
+            android:name="sandip.example.com.github_login_repo.fragment.LoginFragment"
+            android:label="loginFragment">
+
+        <!--<action-->
+                <!--android:id="@+id/searchFragment"-->
+                <!--destination="@+id/searchFragment"-->
+                <!--app:destination="@id/searchFragment" />-->
+
+        <!--<action-->
+                <!--android:id="@+id/otpFragment"-->
+                <!--destination="@+id/otpFragment"-->
+                <!--app:destination="@id/otpFragment" />-->
+
+    </fragment>
+
+
+</navigation>
