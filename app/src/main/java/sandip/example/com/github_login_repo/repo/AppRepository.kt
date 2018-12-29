@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import sandip.example.com.github_login_repo.data.GithubDao
 import sandip.example.com.github_login_repo.objects.LoginResponse
+import sandip.example.com.github_login_repo.objects.Repository
 import sandip.example.com.github_login_repo.remote.WebServices
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
 import sandip.example.com.github_login_repo.utils.remoteUtils.NetworkBoundResource
@@ -20,11 +21,10 @@ class AppRepository @Inject constructor(
 
     fun authentication(username: String, password: String): LiveData<Resource<LoginResponse>> {
 
-
         return object : NetworkBoundResource<LoginResponse, LoginResponse>(executor) {
             override fun createCall() = webservice.getUser()
 
-            override fun shouldFetch(data: LoginResponse?) = true
+            override fun shouldFetch(data: LoginResponse?) = data==null
 
             override fun saveCallResult(item: LoginResponse) {
                 Log.e("Response", "Value: ${Gson().toJson(item)}")
@@ -35,6 +35,25 @@ class AppRepository @Inject constructor(
 
         }.asLiveData()
 
+    }
+
+
+    fun loadRepos(owner: String): LiveData<Resource<List<Repository>>> {
+        return object : NetworkBoundResource<List<Repository>, List<Repository>>(executor) {
+            override fun saveCallResult(item: List<Repository>) {
+                dao.insertRepos(item)
+            }
+
+            override fun shouldFetch(data: List<Repository>?): Boolean {
+                return data == null || data.isEmpty()
+            }
+
+            override fun loadFromDb() = dao.loadRepositories(owner)
+
+            override fun createCall() = webservice.getRepos(owner)
+
+
+        }.asLiveData()
     }
 
 

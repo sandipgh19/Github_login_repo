@@ -4,11 +4,27 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         tools:context=".fragment.LoginFragment">
 
+    <data>
+
+        <variable
+                name="resource"
+                type="sandip.example.com.github_login_repo.utils.remoteUtils.Resource"/>
+
+    </data>
+
     <android.support.constraint.ConstraintLayout
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:paddingLeft="16dp"
-                                                 android:paddingRight="16dp">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+        <include
+                android:id="@+id/progress"
+                layout="@layout/horizontal_progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:resource="@{resource}"/>
+
 
         <android.support.design.widget.TextInputLayout
                 android:id="@+id/client_id_input_layout"

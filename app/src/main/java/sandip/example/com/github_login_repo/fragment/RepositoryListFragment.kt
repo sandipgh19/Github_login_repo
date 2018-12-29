@@ -3,111 +3,121 @@ package sandip.example.com.github_login_repo.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.databinding.DataBindingComponent
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
+
 import sandip.example.com.github_login_repo.R
+import sandip.example.com.github_login_repo.adapter.RepositoryAdapter
+import sandip.example.com.github_login_repo.binding.FragmentDataBindingComponent
 import sandip.example.com.github_login_repo.database.PreferencesHelper
-import sandip.example.com.github_login_repo.databinding.LoginFragmentBinding
+import sandip.example.com.github_login_repo.databinding.FragmentRepositoryListBinding
 import sandip.example.com.github_login_repo.di.Injectable
+import sandip.example.com.github_login_repo.objects.Repository
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
 import sandip.example.com.github_login_repo.utils.helperUtils.autoCleared
 import sandip.example.com.github_login_repo.utils.remoteUtils.Status
 import sandip.example.com.github_login_repo.viewModel.LoginViewModel
-import java.io.UnsupportedEncodingException
+import sandip.example.com.github_login_repo.viewModel.RepositoryListViewModel
 import javax.inject.Inject
 
-class LoginFragment : Fragment(), Injectable {
+/**
+ * A simple [Fragment] subclass.
+ *
+ */
+class RepositoryListFragment : Fragment(), Injectable {
 
-    private lateinit var viewModel: LoginViewModel
+    var binding by autoCleared<FragmentRepositoryListBinding>()
+    private lateinit var viewModel: RepositoryListViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    //var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
+    var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
 
     @Inject
     lateinit var executors: AppExecutors
 
-    var binding by autoCleared<LoginFragmentBinding>()
+    var adapter by autoCleared<RepositoryAdapter>()
+
+    private val OWNER_NAME = "owner_name"
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(OWNER_NAME, owner)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // Inflate the layout for this fragment
 
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.login_fragment,
+            R.layout.fragment_repository_list,
             container,
             false
         )
 
         return binding.root
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(LoginViewModel::class.java)
+            .get(RepositoryListViewModel::class.java)
 
-        binding.authenticate.setOnClickListener {
+        owner = savedInstanceState?.getString(OWNER_NAME) ?: RepositoryListFragmentArgs.fromBundle(arguments).owner
 
-            val authorization =
-                "Basic " + getBase64String("${binding.username.text.toString()}:${binding.password.text.toString()}")
-            PreferencesHelper(requireContext()).authToken = authorization
-            viewModel.login(userName = binding.username.text.toString(), password = binding.password.text.toString())
+        viewModel.login(owner = owner)
+
+        adapter = RepositoryAdapter(dataBindingComponent = dataBindingComponent, appExecutors = executors) { item->
 
         }
 
-        initEntryList(viewModel)
+        binding.let {
+            it.setLifecycleOwner(this)
+            it.adapter = adapter
+        }
+
+
+        initRepoList(viewModel)
 
     }
 
-    private fun initEntryList(viewModel: LoginViewModel) {
+    private fun initRepoList(viewModel: RepositoryListViewModel) {
         viewModel.result.observe(this, Observer { listResource ->
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
             Log.e("Observer", "Data : ${Gson().toJson(listResource)}")
             binding.resource = listResource
+            adapter.submitList(listResource?.data)
             endProgress()
             when (listResource?.status) {
                 Status.SUCCESS -> {
                     endProgress()
-                    if (listResource.data?.login != null) {
-                        val repolistAction = LoginFragmentDirections.repoListFragment()
-                        repolistAction.setOwner(listResource.data.login)
-                        navController().navigate(repolistAction)
-
-                    }
-
                 }
 
                 Status.ERROR -> {
                     endProgress()
-                    Toast.makeText(requireContext(), "You are unAuthorised to use this", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Opps! Something went wrong!", Toast.LENGTH_LONG).show()
                 }
 
-                Status.LOADING -> {
-                    startProgress()
-                }
+                Status.LOADING ->{startProgress()}
             }
         })
-    }
-
-    @Throws(UnsupportedEncodingException::class)
-    fun getBase64String(value: String): String {
-        return Base64.encodeToString(value.toByteArray(charset("UTF-8")), Base64.NO_WRAP)
     }
 
     private fun startProgress() {
@@ -121,6 +131,9 @@ class LoginFragment : Fragment(), Injectable {
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
-    private fun navController() = findNavController()
+    companion object {
+        var owner: String = "-1"
+    }
+
 
 }

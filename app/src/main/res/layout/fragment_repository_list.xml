@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View"/>
+
+        <import type="sandip.example.com.github_login_repo.utils.remoteUtils.Status"/>
+
+        <variable
+                name="resource"
+                type="sandip.example.com.github_login_repo.utils.remoteUtils.Resource"/>
+
+        <variable name="adapter" type="sandip.example.com.github_login_repo.adapter.RepositoryAdapter"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".fragment.RepositoryListFragment">
+
+        <include
+                android:id="@+id/progress"
+                layout="@layout/layout_loading"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:resource="@{resource}"/>
+
+
+        <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/default_margin"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                android:adapter="@{adapter}"
+                app:visibleGone="@{resource.status != Status.LOADING}"
+                tools:listitem="@layout/repo_item"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

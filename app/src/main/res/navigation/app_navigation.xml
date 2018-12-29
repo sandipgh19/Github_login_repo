@@ -8,15 +8,32 @@
             android:name="sandip.example.com.github_login_repo.fragment.LoginFragment"
             android:label="loginFragment">
 
-        <!--<action-->
-                <!--android:id="@+id/searchFragment"-->
-                <!--destination="@+id/searchFragment"-->
-                <!--app:destination="@id/searchFragment" />-->
+        <action
+                android:id="@+id/repoListFragment"
+                destination="@+id/repoListFragment"
+                app:destination="@id/repoListFragment" />
 
         <!--<action-->
                 <!--android:id="@+id/otpFragment"-->
                 <!--destination="@+id/otpFragment"-->
                 <!--app:destination="@id/otpFragment" />-->
+
+    </fragment>
+
+    <fragment
+            android:id="@+id/repoListFragment"
+            android:name="sandip.example.com.github_login_repo.fragment.RepositoryListFragment"
+            android:label="repoFragment">
+
+        <argument
+                android:name="owner"
+                android:defaultValue="-1"
+                app:type="string" />
+
+        <!--<action-->
+        <!--android:id="@+id/otpFragment"-->
+        <!--destination="@+id/otpFragment"-->
+        <!--app:destination="@id/otpFragment" />-->
 
     </fragment>
 
