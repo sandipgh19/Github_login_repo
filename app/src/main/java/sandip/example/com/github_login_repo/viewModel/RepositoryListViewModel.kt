@@ -51,15 +51,18 @@ class RepositoryListViewModel @Inject constructor(
     var result: LiveData<Resource<List<Repository>>>
     var owner = MutableLiveData<String>()
 
-    fun login(owner: String) {
-        this.owner.value = owner
+    var apiCall = true
+
+    fun init(owner: String) {
+        if (apiCall)
+            this.owner.value = owner
     }
 
     init {
         result = Transformations.switchMap(owner) {
             when (owner.value) {
                 null -> AbsentedLiveData.create()
-                else -> repo.loadRepos(owner = owner.value!!)
+                else -> repo.loadRepos()
             }
         }
     }

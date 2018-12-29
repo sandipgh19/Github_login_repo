@@ -17,4 +17,12 @@
     <string name="user_name">User Name</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
+    <string name="repo_list">Repository List</string>
+    <string name="watcher">Watcher</string>
+    <string name="unauthorised">You are unauthorised to use this.</string>
+    <string name="generalError">Oops something went wrong. Try again.</string>
+    <string name="logout">Log Out</string>
+    <string name="image_description">No Data Found</string>
+    <string name="no_watcher">No Watcher Found</string>
+
 </resources>

@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.gson.Gson
 import sandip.example.com.github_login_repo.data.GithubDao
 import sandip.example.com.github_login_repo.objects.LoginResponse
+import sandip.example.com.github_login_repo.objects.RepoWatching
 import sandip.example.com.github_login_repo.objects.Repository
 import sandip.example.com.github_login_repo.remote.WebServices
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
@@ -19,38 +20,52 @@ class AppRepository @Inject constructor(
     private val dao: GithubDao) {
 
 
-    fun authentication(username: String, password: String): LiveData<Resource<LoginResponse>> {
+    fun authentication(username: String): LiveData<Resource<LoginResponse>> {
 
         return object : NetworkBoundResource<LoginResponse, LoginResponse>(executor) {
             override fun createCall() = webservice.getUser()
 
-            override fun shouldFetch(data: LoginResponse?) = data==null
+            override fun shouldFetch(data: LoginResponse?) = true
 
             override fun saveCallResult(item: LoginResponse) {
                 Log.e("Response", "Value: ${Gson().toJson(item)}")
                 dao.insertLogin(item)
             }
 
-            override fun loadFromDb() = dao.fetchLogin(login = username)
+            override fun loadFromDb() = dao.fetchLogin(login = username.toLowerCase())
 
         }.asLiveData()
 
     }
 
 
-    fun loadRepos(owner: String): LiveData<Resource<List<Repository>>> {
+    fun loadRepos(): LiveData<Resource<List<Repository>>> {
         return object : NetworkBoundResource<List<Repository>, List<Repository>>(executor) {
             override fun saveCallResult(item: List<Repository>) {
-                dao.insertRepos(item)
+                dao.insertDeleteRepo(item)
             }
 
-            override fun shouldFetch(data: List<Repository>?): Boolean {
-                return data == null || data.isEmpty()
+            override fun shouldFetch(data: List<Repository>?) = true
+
+            override fun loadFromDb() = dao.loadRepositories()
+
+            override fun createCall() = webservice.getRepos()
+
+
+        }.asLiveData()
+    }
+
+    fun loadRepoWatching(owner: String, repo: String): LiveData<Resource<List<RepoWatching>>> {
+        return object : NetworkBoundResource<List<RepoWatching>, List<RepoWatching>>(executor) {
+            override fun saveCallResult(item: List<RepoWatching>) {
+                dao.insertDeleteRepoWatcher(watcher = item)
             }
 
-            override fun loadFromDb() = dao.loadRepositories(owner)
+            override fun shouldFetch(data: List<RepoWatching>?) = true
 
-            override fun createCall() = webservice.getRepos(owner)
+            override fun loadFromDb() = dao.loadRepositoriesWatcher()
+
+            override fun createCall() = webservice.getRepoWatching(owner = owner, name = repo)
 
 
         }.asLiveData()

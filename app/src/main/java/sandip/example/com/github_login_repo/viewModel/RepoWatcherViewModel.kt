@@ -6,24 +6,28 @@ import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import android.databinding.Observable
 import android.databinding.PropertyChangeRegistry
-import sandip.example.com.github_login_repo.objects.LoginResponse
+import sandip.example.com.github_login_repo.objects.RepoWatching
+import sandip.example.com.github_login_repo.objects.Repository
 import sandip.example.com.github_login_repo.repo.AppRepository
 import sandip.example.com.github_login_repo.utils.remoteUtils.AbsentedLiveData
 import sandip.example.com.github_login_repo.utils.remoteUtils.Resource
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(
-    var repo: AppRepository) : ViewModel(), Observable {
+class RepoWatcherViewModel @Inject constructor(
+    var repo: AppRepository
+) : ViewModel(), Observable {
 
     private val callbacks: PropertyChangeRegistry by lazy { PropertyChangeRegistry() }
 
     override fun addOnPropertyChangedCallback(
-        callback: Observable.OnPropertyChangedCallback) {
+        callback: Observable.OnPropertyChangedCallback
+    ) {
         callbacks.add(callback)
     }
 
     override fun removeOnPropertyChangedCallback(
-        callback: Observable.OnPropertyChangedCallback) {
+        callback: Observable.OnPropertyChangedCallback
+    ) {
         callbacks.remove(callback)
     }
 
@@ -45,21 +49,20 @@ class LoginViewModel @Inject constructor(
         callbacks.notifyCallbacks(this, fieldId, null)
     }
 
-    var result: LiveData<Resource<LoginResponse>>
-    var userName = MutableLiveData<String>()
-    var password = MutableLiveData<String>()
+    var result: LiveData<Resource<List<RepoWatching>>>
+    var owner = MutableLiveData<String>()
+    var repo_name = MutableLiveData<String>()
 
-    fun login(userName: String, password: String) {
-        this.userName.value = userName
-        this.password.value = password
+    fun init(owner: String, repo: String) {
+        this.owner.value = owner
+        this.repo_name.value = repo
     }
 
     init {
-        result = Transformations.switchMap(password) {
-            userName
-            when (password.value) {
+        result = Transformations.switchMap(repo_name) {owner
+            when (repo_name.value) {
                 null -> AbsentedLiveData.create()
-                else -> repo.authentication(username = userName.value!!)
+                else -> repo.loadRepoWatching(owner = owner.value!!, repo = repo_name.value!!)
             }
         }
     }

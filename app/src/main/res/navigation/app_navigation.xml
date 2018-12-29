@@ -11,12 +11,7 @@
         <action
                 android:id="@+id/repoListFragment"
                 destination="@+id/repoListFragment"
-                app:destination="@id/repoListFragment" />
-
-        <!--<action-->
-                <!--android:id="@+id/otpFragment"-->
-                <!--destination="@+id/otpFragment"-->
-                <!--app:destination="@id/otpFragment" />-->
+                app:destination="@id/repoListFragment"/>
 
     </fragment>
 
@@ -28,12 +23,30 @@
         <argument
                 android:name="owner"
                 android:defaultValue="-1"
-                app:type="string" />
+                app:type="string"/>
 
-        <!--<action-->
-        <!--android:id="@+id/otpFragment"-->
-        <!--destination="@+id/otpFragment"-->
-        <!--app:destination="@id/otpFragment" />-->
+        <action
+                android:id="@+id/repoWatcherFragment"
+                destination="@+id/repoWatcherFragment"
+                app:destination="@id/repoWatcherFragment"/>
+
+    </fragment>
+
+
+    <fragment
+            android:id="@+id/repoWatcherFragment"
+            android:name="sandip.example.com.github_login_repo.fragment.RepoWatcherFragment"
+            android:label="watcherFragment">
+
+        <argument
+                android:name="owner"
+                android:defaultValue="-1"
+                app:type="string"/>
+
+        <argument
+                android:name="repo"
+                android:defaultValue="-1"
+                app:type="string"/>
 
     </fragment>
 

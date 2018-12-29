@@ -3,6 +3,7 @@ package sandip.example.com.github_login_repo.di.module
 import android.annotation.SuppressLint
 import android.app.Application
 import android.arch.persistence.room.Room
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -71,6 +72,7 @@ class AppModule {
             .addInterceptor { chain ->
                 // need to intercept the request on the network layer provided by OkHttp
                 val original = chain.request()
+                Log.e("APICALl" ,"Call: ${original.url()}")
 
 
                 // add request headers

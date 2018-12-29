@@ -15,11 +15,11 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
+import sandip.example.com.github_login_repo.MainActivity
 import sandip.example.com.github_login_repo.R
 import sandip.example.com.github_login_repo.database.PreferencesHelper
 import sandip.example.com.github_login_repo.databinding.LoginFragmentBinding
 import sandip.example.com.github_login_repo.di.Injectable
-import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
 import sandip.example.com.github_login_repo.utils.helperUtils.autoCleared
 import sandip.example.com.github_login_repo.utils.remoteUtils.Status
 import sandip.example.com.github_login_repo.viewModel.LoginViewModel
@@ -32,11 +32,6 @@ class LoginFragment : Fragment(), Injectable {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    //var dataBindingComponent: DataBindingComponent = FragmentDataBindingComponent(this)
-
-    @Inject
-    lateinit var executors: AppExecutors
 
     var binding by autoCleared<LoginFragmentBinding>()
 
@@ -52,6 +47,12 @@ class LoginFragment : Fragment(), Injectable {
             false
         )
 
+        val actionBar = (activity as MainActivity).supportActionBar
+        actionBar!!.setDisplayShowTitleEnabled(true)
+        actionBar.setDisplayHomeAsUpEnabled(false)
+        actionBar.title = getString(R.string.title_activity_login)
+
+
         return binding.root
     }
 
@@ -63,10 +64,20 @@ class LoginFragment : Fragment(), Injectable {
 
         binding.authenticate.setOnClickListener {
 
-            val authorization =
-                "Basic " + getBase64String("${binding.username.text.toString()}:${binding.password.text.toString()}")
-            PreferencesHelper(requireContext()).authToken = authorization
-            viewModel.login(userName = binding.username.text.toString(), password = binding.password.text.toString())
+            if (binding.username.text.isNullOrEmpty()) {
+                binding.username.error = getString(R.string.error_field_required)
+            } else if (binding.password.text.isNullOrEmpty()) {
+                binding.password.error = getString(R.string.error_field_required)
+            } else {
+                val authorization =
+                    "Basic " + getBase64String("${binding.username.text.toString()}:${binding.password.text.toString()}")
+                PreferencesHelper(requireContext()).authToken = authorization
+                viewModel.login(
+                    userName = binding.username.text.toString(),
+                    password = binding.password.text.toString()
+                )
+
+            }
 
         }
 
@@ -95,7 +106,7 @@ class LoginFragment : Fragment(), Injectable {
 
                 Status.ERROR -> {
                     endProgress()
-                    Toast.makeText(requireContext(), "You are unAuthorised to use this", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), getString(R.string.unauthorised), Toast.LENGTH_LONG).show()
                 }
 
                 Status.LOADING -> {

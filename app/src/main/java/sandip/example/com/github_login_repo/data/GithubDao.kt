@@ -1,11 +1,9 @@
 package sandip.example.com.github_login_repo.data
 
 import android.arch.lifecycle.LiveData
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import sandip.example.com.github_login_repo.objects.LoginResponse
+import sandip.example.com.github_login_repo.objects.RepoWatching
 import sandip.example.com.github_login_repo.objects.Repository
 
 @Dao
@@ -20,16 +18,37 @@ interface GithubDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRepos(repositories: List<Repository>)
 
-    @Query("SELECT * FROM Repository WHERE owner_login = :ownerLogin AND name = :name")
-    fun load(ownerLogin: String, name: String): LiveData<Repository>
+    @Query("DELETE FROM Repository")
+    fun deleteRepos()
 
-    @Query(
-        """
-        SELECT * FROM Repository
-        WHERE owner_login = :owner
-        ORDER BY stars DESC"""
-    )
-    fun loadRepositories(owner: String): LiveData<List<Repository>>
+    @Transaction
+    fun insertDeleteRepo(repositories: List<Repository>) {
+        deleteRepos()
+        insertRepos(repositories = repositories)
+    }
+
+
+    @Query("SELECT * FROM Repository ORDER BY stars DESC")
+    fun loadRepositories(): LiveData<List<Repository>>
+
+
+    @Query(" SELECT * FROM repo_watching")
+    fun loadRepositoriesWatcher(): LiveData<List<RepoWatching>>
+
+    @Query("DELETE FROM repo_watching")
+    fun deleteRepoWatcher()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertRepoWatcher(watcher: List<RepoWatching>)
+
+
+
+    @Transaction
+    fun insertDeleteRepoWatcher(watcher: List<RepoWatching>) {
+        deleteRepoWatcher()
+        insertRepoWatcher(watcher = watcher)
+    }
+
 
 
 }

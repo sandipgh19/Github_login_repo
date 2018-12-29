@@ -37,8 +37,4 @@ data class Repository(
         @field:SerializedName("url")
         val url: String?
     )
-
-    companion object {
-        const val UNKNOWN_ID = -1
-    }
 }

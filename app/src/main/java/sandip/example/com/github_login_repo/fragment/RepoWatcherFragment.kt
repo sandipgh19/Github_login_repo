@@ -11,32 +11,28 @@ import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import sandip.example.com.github_login_repo.MainActivity
-
 import sandip.example.com.github_login_repo.R
-import sandip.example.com.github_login_repo.adapter.RepositoryAdapter
+import sandip.example.com.github_login_repo.adapter.WatcherAdapter
 import sandip.example.com.github_login_repo.binding.FragmentDataBindingComponent
-import sandip.example.com.github_login_repo.database.PreferencesHelper
-import sandip.example.com.github_login_repo.databinding.FragmentRepositoryListBinding
+import sandip.example.com.github_login_repo.databinding.FragmentRepoWatcherBinding
 import sandip.example.com.github_login_repo.di.Injectable
-import sandip.example.com.github_login_repo.objects.Repository
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
 import sandip.example.com.github_login_repo.utils.helperUtils.autoCleared
 import sandip.example.com.github_login_repo.utils.remoteUtils.Status
-import sandip.example.com.github_login_repo.viewModel.LoginViewModel
-import sandip.example.com.github_login_repo.viewModel.RepositoryListViewModel
+import sandip.example.com.github_login_repo.viewModel.RepoWatcherViewModel
 import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
  *
  */
-class RepositoryListFragment : Fragment(), Injectable {
+class RepoWatcherFragment : Fragment(), Injectable {
 
-    var binding by autoCleared<FragmentRepositoryListBinding>()
-    private lateinit var viewModel: RepositoryListViewModel
+    var binding by autoCleared<FragmentRepoWatcherBinding>()
+
+    private lateinit var viewModel: RepoWatcherViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,20 +42,21 @@ class RepositoryListFragment : Fragment(), Injectable {
     @Inject
     lateinit var executors: AppExecutors
 
-    var adapter by autoCleared<RepositoryAdapter>()
+    var adapter by autoCleared<WatcherAdapter>()
 
     private val OWNER_NAME = "owner_name"
+    private val REPO_NAME = "repo_name"
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(OWNER_NAME, owner)
+        outState.putString(REPO_NAME, repo)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +66,7 @@ class RepositoryListFragment : Fragment(), Injectable {
 
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_repository_list,
+            R.layout.fragment_repo_watcher,
             container,
             false
         )
@@ -77,36 +74,31 @@ class RepositoryListFragment : Fragment(), Injectable {
         val actionBar = (activity as MainActivity).supportActionBar
         actionBar!!.setDisplayShowTitleEnabled(true)
         actionBar.setDisplayHomeAsUpEnabled(false)
-        actionBar.title = getString(R.string.repo_list)
+        actionBar.title = getString(R.string.watcher)
 
 
         return binding.root
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(RepositoryListViewModel::class.java)
+            .get(RepoWatcherViewModel::class.java)
 
-        owner = savedInstanceState?.getString(OWNER_NAME) ?: RepositoryListFragmentArgs.fromBundle(arguments).owner
+        owner = savedInstanceState?.getString(OWNER_NAME) ?: RepoWatcherFragmentArgs.fromBundle(arguments).owner
+        repo = savedInstanceState?.getString(REPO_NAME) ?: RepoWatcherFragmentArgs.fromBundle(arguments).repo
 
-        viewModel.init(owner = owner)
+        viewModel.init(owner = owner, repo = repo)
 
-        adapter = RepositoryAdapter(dataBindingComponent = dataBindingComponent, appExecutors = executors) { item->
-
-            Log.e("item: ", "Value: ${Gson().toJson(item)}")
-            val watcherAction = RepositoryListFragmentDirections.repoWatcherFragment()
-            watcherAction.setOwner(item.owner.login)
-            watcherAction.setRepo(item.name)
-            navController().navigate(watcherAction)
+        adapter = WatcherAdapter(dataBindingComponent = dataBindingComponent, appExecutors = executors) { item->
 
         }
 
         binding.let {
             it.setLifecycleOwner(this)
             it.adapter = adapter
+            it.count = 1
         }
 
 
@@ -114,17 +106,17 @@ class RepositoryListFragment : Fragment(), Injectable {
 
     }
 
-    private fun initRepoList(viewModel: RepositoryListViewModel) {
+    private fun initRepoList(viewModel: RepoWatcherViewModel) {
         viewModel.result.observe(this, Observer { listResource ->
             // we don't need any null checks here for the adapter since LiveData guarantees that
             // it won't call us if fragment is stopped or not started.
             Log.e("Observer", "Data : ${Gson().toJson(listResource)}")
             binding.resource = listResource
+            binding.count = listResource?.data?.size
             adapter.submitList(listResource?.data)
             endProgress()
             when (listResource?.status) {
                 Status.SUCCESS -> {
-                    viewModel.apiCall = false
                     endProgress()
                 }
 
@@ -149,8 +141,6 @@ class RepositoryListFragment : Fragment(), Injectable {
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
-    private fun navController() = findNavController()
-
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.menu, menu)
     }
@@ -171,6 +161,8 @@ class RepositoryListFragment : Fragment(), Injectable {
 
     companion object {
         var owner: String = "-1"
+        var repo: String = "-1"
     }
+
 
 }
