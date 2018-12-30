@@ -38,7 +38,7 @@ class RepositoryAdapter(
                 false,
                 dataBindingComponent
             )
-        binding.root.setOnClickListener {
+        binding.showWatcher.setOnClickListener {
             binding.repo?.let {
                 callback?.invoke(it)
             }

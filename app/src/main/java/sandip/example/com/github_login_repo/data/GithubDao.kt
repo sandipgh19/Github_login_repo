@@ -9,11 +9,20 @@ import sandip.example.com.github_login_repo.objects.Repository
 @Dao
 interface GithubDao {
 
-    @Query("SELECT * FROM login_table WHERE login=:login or email=:login")
-    fun fetchLogin(login: String) : LiveData<LoginResponse>
+    @Query("SELECT * FROM login_table")
+    fun fetchLogin() : LiveData<LoginResponse>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertLogin(list: LoginResponse?)
+    fun insertUser(user: LoginResponse?)
+
+    @Query("DELETE from login_table")
+    fun deleteUser()
+
+    @Transaction
+    fun insertDeleteUser(user: LoginResponse?){
+        deleteUser()
+        insertUser(user = user)
+    }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRepos(repositories: List<Repository>)
@@ -40,7 +49,6 @@ interface GithubDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertRepoWatcher(watcher: List<RepoWatching>)
-
 
 
     @Transaction

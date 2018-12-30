@@ -11,7 +11,9 @@
         <action
                 android:id="@+id/repoListFragment"
                 destination="@+id/repoListFragment"
-                app:destination="@id/repoListFragment"/>
+                app:destination="@id/repoListFragment"
+                app:popUpTo="@id/loginFragment"
+                app:popUpToInclusive="true"/>
 
     </fragment>
 

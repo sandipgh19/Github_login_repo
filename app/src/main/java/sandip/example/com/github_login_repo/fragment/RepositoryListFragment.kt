@@ -120,11 +120,12 @@ class RepositoryListFragment : Fragment(), Injectable {
             // it won't call us if fragment is stopped or not started.
             Log.e("Observer", "Data : ${Gson().toJson(listResource)}")
             binding.resource = listResource
-            adapter.submitList(listResource?.data)
+            binding.count = listResource?.data?.size
             endProgress()
             when (listResource?.status) {
                 Status.SUCCESS -> {
                     viewModel.apiCall = false
+                    adapter.submitList(listResource.data)
                     endProgress()
                 }
 
@@ -159,6 +160,7 @@ class RepositoryListFragment : Fragment(), Injectable {
         when (item?.itemId) {
             R.id.action_logout -> {
 
+                PreferencesHelper(requireContext()).authToken = ""
                 requireActivity().finish()
                 val intent = Intent(requireActivity(), MainActivity::class.java)
                 startActivity(intent)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable name="count" type="Integer"/>
@@ -9,6 +9,8 @@
         <variable
                 name="resource"
                 type="sandip.example.com.github_login_repo.utils.remoteUtils.Resource"/>
+
+        <variable name="displayText" type="String"/>
 
     </data>
 
@@ -48,7 +50,8 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline"
                 android:padding="@dimen/material_component_cards_padding"
-                android:text="@string/no_watcher"
+                tools:text="@string/no_watcher"
+                android:text="@{displayText}"
                 style="@style/Base.TextAppearance.AppCompat.Medium"/>
 
         <android.support.constraint.Guideline

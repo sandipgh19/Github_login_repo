@@ -28,7 +28,12 @@ data class Repository(
     @field:SerializedName("watchers_count")
     val watchers: Int,
     @field:SerializedName("language")
-    val language: String?
+    val language: String?,
+    @field:SerializedName("created_at")
+    val createdAt: String?,
+    @field:SerializedName("private")
+    val repoType: Boolean?
+
 ) {
 
     data class Owner(

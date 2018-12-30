@@ -1,19 +1,11 @@
 <resources>
-    <string name="app_name">Github_login_repo</string>
+    <string name="app_name">Github Auth Demo</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Sign In</string>
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
     <string name="user_name">User Name</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
@@ -24,5 +16,17 @@
     <string name="logout">Log Out</string>
     <string name="image_description">No Data Found</string>
     <string name="no_watcher">No Watcher Found</string>
+    <string name="welcome">Welcome</string>
+    <string name="welcome_caption">Sign in with your\nGithub Credential</string>
+    <string name="show_watcher">Show Watcher</string>
+    <string name="empty_text">--/--</string>
+    <string name="day_date_short">EEE, MMM dd, yyyy</string>
+    <string name="empty_description">No Description Available</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="no_repo">No Repository Found</string>
+    <string name="private_repo">Private</string>
+    <string name="language">Language</string>
+    <string name="description">Description</string>
 
 </resources>

@@ -52,6 +52,13 @@ class LoginFragment : Fragment(), Injectable {
         actionBar.setDisplayHomeAsUpEnabled(false)
         actionBar.title = getString(R.string.title_activity_login)
 
+        if (PreferencesHelper(requireContext()).authToken!="" && PreferencesHelper(requireContext()).user!=""){
+
+            val repolistAction = LoginFragmentDirections.repoListFragment()
+            repolistAction.setOwner(PreferencesHelper(requireContext()).user)
+            navController().navigate(repolistAction)
+        }
+
 
         return binding.root
     }
@@ -96,6 +103,7 @@ class LoginFragment : Fragment(), Injectable {
                 Status.SUCCESS -> {
                     endProgress()
                     if (listResource.data?.login != null) {
+                        PreferencesHelper(requireContext()).user = listResource.data.login
                         val repolistAction = LoginFragmentDirections.repoListFragment()
                         repolistAction.setOwner(listResource.data.login)
                         navController().navigate(repolistAction)

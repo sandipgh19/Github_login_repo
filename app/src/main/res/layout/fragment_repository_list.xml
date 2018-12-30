@@ -15,6 +15,8 @@
 
         <variable name="adapter" type="sandip.example.com.github_login_repo.adapter.RepositoryAdapter"/>
 
+        <variable name="count" type="Integer"/>
+
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -30,14 +32,25 @@
                 app:resource="@{resource}"/>
 
 
-        <android.support.v7.widget.RecyclerView
+        <com.lsjwzh.widget.recyclerviewpager.RecyclerViewPager
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/default_margin"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                app:layoutManager="android.support.v7.widget.GridLayoutManager"
                 android:adapter="@{adapter}"
+                android:orientation="horizontal"
                 app:visibleGone="@{resource.status != Status.LOADING}"
-                tools:listitem="@layout/repo_item"/>
+                tools:listitem="@layout/repo_item"
+                android:layout_margin="8dp"
+                app:rvp_triggerOffset="0.1"
+                app:rvp_singlePageFling="true"
+                android:clipToPadding="false"/>
+
+        <include
+                layout="@layout/layout_no_data"
+                app:count="@{count}"
+                app:resource="@{resource}"
+                app:displayText="@{@string/no_repo}"/>
 
     </android.support.constraint.ConstraintLayout>
 

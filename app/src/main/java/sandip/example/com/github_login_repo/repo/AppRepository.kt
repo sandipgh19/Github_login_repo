@@ -29,10 +29,10 @@ class AppRepository @Inject constructor(
 
             override fun saveCallResult(item: LoginResponse) {
                 Log.e("Response", "Value: ${Gson().toJson(item)}")
-                dao.insertLogin(item)
+                dao.insertDeleteUser(item)
             }
 
-            override fun loadFromDb() = dao.fetchLogin(login = username.toLowerCase())
+            override fun loadFromDb() = dao.fetchLogin()
 
         }.asLiveData()
 

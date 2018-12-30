@@ -16,6 +16,7 @@ import sandip.example.com.github_login_repo.MainActivity
 import sandip.example.com.github_login_repo.R
 import sandip.example.com.github_login_repo.adapter.WatcherAdapter
 import sandip.example.com.github_login_repo.binding.FragmentDataBindingComponent
+import sandip.example.com.github_login_repo.database.PreferencesHelper
 import sandip.example.com.github_login_repo.databinding.FragmentRepoWatcherBinding
 import sandip.example.com.github_login_repo.di.Injectable
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
@@ -113,11 +114,11 @@ class RepoWatcherFragment : Fragment(), Injectable {
             Log.e("Observer", "Data : ${Gson().toJson(listResource)}")
             binding.resource = listResource
             binding.count = listResource?.data?.size
-            adapter.submitList(listResource?.data)
             endProgress()
             when (listResource?.status) {
                 Status.SUCCESS -> {
                     endProgress()
+                    adapter.submitList(listResource.data)
                 }
 
                 Status.ERROR -> {
@@ -149,6 +150,7 @@ class RepoWatcherFragment : Fragment(), Injectable {
         when (item?.itemId) {
             R.id.action_logout -> {
 
+                PreferencesHelper(requireContext()).authToken = ""
                 requireActivity().finish()
                 val intent = Intent(requireActivity(), MainActivity::class.java)
                 startActivity(intent)
