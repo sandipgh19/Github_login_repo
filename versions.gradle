@@ -15,10 +15,9 @@ versions.kotlin = "1.2.51"
 versions.http_mime="4.2.3"
 versions.play="11.4.2"
 versions.gson="2.7"
-versions.constraint_layout="1.0.2"
+versions.constraint_layout="1.1.0-beta1"
 versions.multidex="1.0.1"
 versions.glide="3.7.0"
-versions.paging = "1.0.1"
 versions.navigation = "1.0.0-alpha03"
 def deps = [:]
 
@@ -73,11 +72,6 @@ kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$versions.kotlin"
 deps.kotlin = kotlin
 
-def play=[:]
-play.runtime="com.google.android.gms:play-services:$versions.play"
-play.firebase="com.google.firebase:firebase-messaging:$versions.play"
-deps.play=play
-
 def navigation = [:]
 navigation.runtime = "android.arch.navigation:navigation-runtime:$versions.navigation"
 navigation.runtime_ktx = "android.arch.navigation:navigation-runtime-ktx:$versions.navigation"
@@ -87,8 +81,6 @@ navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-grad
 navigation.testing_ktx = "android.arch.navigation:navigation-testing-ktx:$versions.navigation"
 deps.navigation = navigation
 
-deps.paging = "android.arch.paging:runtime:$versions.paging"
-deps.constraint_layout = "com.android.support.constraint:constraint-layout:$versions.constraint_layout"
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
 deps.http_mime="org.apache.httpcomponents:httpmime:$versions.http_mime"
 deps.gson="com.google.code.gson:gson:$versions.gson"

@@ -17,6 +17,7 @@ class AppController : Application(), HasActivityInjector {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         AppInjector.init(this)
     }
 
@@ -30,4 +31,10 @@ class AppController : Application(), HasActivityInjector {
      * Returns an [AndroidInjector] of [Activity]s.
      */
     override fun activityInjector() = dispatchingAndroidInjector
+
+    companion object {
+        @get:Synchronized
+        lateinit var instance: AppController
+    }
+
 }

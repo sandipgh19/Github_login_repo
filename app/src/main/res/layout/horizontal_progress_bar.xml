@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View"/>
+
+        <import type="sandip.example.com.github_login_repo.utils.remoteUtils.Status"/>
+
+        <variable
+                name="resource"
+                type="sandip.example.com.github_login_repo.utils.remoteUtils.Resource"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+        <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:indeterminate="true"
+                android:layout_marginTop="@dimen/activity_negative_margin_small"
+                android:visibility="@{resource.status == Status.LOADING ? View.VISIBLE : View.GONE}"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</layout>

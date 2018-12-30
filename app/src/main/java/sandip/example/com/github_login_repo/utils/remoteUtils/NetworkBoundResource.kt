@@ -4,6 +4,8 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.support.annotation.MainThread
 import android.support.annotation.WorkerThread
+import android.util.Log
+import com.google.gson.Gson
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
 
 abstract class NetworkBoundResource<ResultType, RequestType> @MainThread constructor(
@@ -36,6 +38,8 @@ abstract class NetworkBoundResource<ResultType, RequestType> @MainThread constru
         result.addSource(apiResponse) { response ->
             result.removeSource(apiResponse)
             result.removeSource(dbSource)
+
+            Log.e("NetworkBound", "Value: ${Gson().toJson(response)}")
 
             if (response!!.isSuccessful) {
                 appExecutors.diskIO().execute {

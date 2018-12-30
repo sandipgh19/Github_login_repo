@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            app:startDestination="@id/loginFragment">
+
+    <fragment
+            android:id="@+id/loginFragment"
+            android:name="sandip.example.com.github_login_repo.fragment.LoginFragment"
+            android:label="loginFragment">
+
+        <action
+                android:id="@+id/repoListFragment"
+                destination="@+id/repoListFragment"
+                app:destination="@id/repoListFragment"
+                app:popUpTo="@id/loginFragment"
+                app:popUpToInclusive="true"/>
+
+    </fragment>
+
+    <fragment
+            android:id="@+id/repoListFragment"
+            android:name="sandip.example.com.github_login_repo.fragment.RepositoryListFragment"
+            android:label="repoFragment">
+
+        <argument
+                android:name="owner"
+                android:defaultValue="-1"
+                app:type="string"/>
+
+        <action
+                android:id="@+id/repoWatcherFragment"
+                destination="@+id/repoWatcherFragment"
+                app:destination="@id/repoWatcherFragment"/>
+
+    </fragment>
+
+
+    <fragment
+            android:id="@+id/repoWatcherFragment"
+            android:name="sandip.example.com.github_login_repo.fragment.RepoWatcherFragment"
+            android:label="watcherFragment">
+
+        <argument
+                android:name="owner"
+                android:defaultValue="-1"
+                app:type="string"/>
+
+        <argument
+                android:name="repo"
+                android:defaultValue="-1"
+                app:type="string"/>
+
+    </fragment>
+
+
+</navigation>
