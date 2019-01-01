@@ -45,6 +45,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
     testImplementation 'junit:junit:4.12'
     implementation deps.room.runtime
 
@@ -72,13 +73,9 @@ dependencies {
     implementation deps.support.annotations
     implementation deps.support.exif_interface
 
-    implementation deps.play.runtime
-
-    implementation deps.paging
     implementation deps.gson
     implementation deps.glide
     implementation deps.navigation.fragment_ktx
-
 
     androidTestImplementation deps.navigation.testing_ktx
     kapt deps.dagger.android_support_compiler
@@ -88,5 +85,7 @@ dependencies {
     })
     kapt deps.lifecycle.compiler
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
+    implementation 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.2'
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 
 }
