@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="sandip.example.com.github_login_repo">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
             android:name=".AppController"
             android:allowBackup="true"
