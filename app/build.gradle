@@ -76,6 +76,7 @@ dependencies {
     implementation deps.gson
     implementation deps.glide
     implementation deps.navigation.fragment_ktx
+    implementation deps.paging
 
     androidTestImplementation deps.navigation.testing_ktx
     kapt deps.dagger.android_support_compiler
