@@ -37,6 +37,10 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -87,5 +91,16 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
     implementation 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.2'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    androidTestImplementation(deps.espresso.core, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    })
+    androidTestImplementation(deps.espresso.contrib, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    })
+    androidTestImplementation deps.espresso.intents
+    androidTestImplementation deps.support.test_runner
+
 
 }

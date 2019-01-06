@@ -19,6 +19,8 @@ versions.constraint_layout="1.1.0-beta1"
 versions.multidex="1.0.1"
 versions.glide="3.7.0"
 versions.navigation = "1.0.0-alpha03"
+versions.junit = "4.12"
+versions.espresso = "3.0.2"
 def deps = [:]
 
 def support = [:]
@@ -80,6 +82,12 @@ navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$vers
 navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 navigation.testing_ktx = "android.arch.navigation:navigation-testing-ktx:$versions.navigation"
 deps.navigation = navigation
+
+def espresso = [:]
+espresso.core = "com.android.support.test.espresso:espresso-core:$versions.espresso"
+espresso.contrib = "com.android.support.test.espresso:espresso-contrib:$versions.espresso"
+espresso.intents = "com.android.support.test.espresso:espresso-intents:$versions.espresso"
+deps.espresso = espresso
 
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
 deps.http_mime="org.apache.httpcomponents:httpmime:$versions.http_mime"
