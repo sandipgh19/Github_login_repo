@@ -101,6 +101,8 @@ dependencies {
     })
     androidTestImplementation deps.espresso.intents
     androidTestImplementation deps.support.test_runner
+    testImplementation deps.mockito.core
+    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
 
 
 }
