@@ -17,7 +17,8 @@ android {
         versionCode 1
         versionName "1.0"
         dataBinding.enabled = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner "sandip.example.com.github_login_repo.utils.AppRunnerTest"
 
         androidExtensions {
             experimental = true
@@ -103,6 +104,33 @@ dependencies {
     androidTestImplementation deps.support.test_runner
     testImplementation deps.mockito.core
     androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
+
+    task fullCoverageReport(type: JacocoReport) {
+        dependsOn 'createDebugCoverageReport'
+        dependsOn 'testDebugUnitTest'
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+                          '**/*Test*.*', 'android/**/*.*',
+                          '**/*_MembersInjector.class',
+                          '**/Dagger*Component.class',
+                          '**/Dagger*Component$Builder.class',
+                          '**/*_*Factory.class',
+                          '**/*ComponentImpl.class',
+                          '**/*SubComponentBuilder.class']
+        def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+        def mainSrc = "${project.projectDir}/src/main/java"
+
+        sourceDirectories = files([mainSrc])
+        classDirectories = files([debugTree])
+        executionData = fileTree(dir: "$buildDir", includes: [
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/code-coverage/connected/*coverage.ec"
+        ])
+    }
 
 
 }
