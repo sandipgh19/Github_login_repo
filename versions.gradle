@@ -96,6 +96,10 @@ mockito.core = "org.mockito:mockito-core:$versions.mockito"
 mockito.all = "org.mockito:mockito-all:$versions.mockito_all"
 deps.mockito = mockito
 
+def arch_core = [:]
+arch_core.testing = "android.arch.core:core-testing:$versions.arch_core"
+deps.arch_core = arch_core
+
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
 deps.http_mime="org.apache.httpcomponents:httpmime:$versions.http_mime"
 deps.gson="com.google.code.gson:gson:$versions.gson"

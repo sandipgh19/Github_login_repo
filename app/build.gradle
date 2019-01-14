@@ -103,6 +103,13 @@ dependencies {
     androidTestImplementation deps.espresso.intents
     androidTestImplementation deps.support.test_runner
     testImplementation deps.mockito.core
+    testImplementation(deps.arch_core.testing, {
+        exclude group: 'com.android.support', module: 'support-compat'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-core-utils'
+    })
+    androidTestImplementation deps.arch_core.testing
+    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
     androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
 
     task fullCoverageReport(type: JacocoReport) {
