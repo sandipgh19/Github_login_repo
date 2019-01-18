@@ -3,24 +3,48 @@ package sandip.example.com.github_login_repo.repo
 import android.arch.lifecycle.LiveData
 import android.util.Log
 import com.google.gson.Gson
+import retrofit2.Call
 import sandip.example.com.github_login_repo.data.GithubDao
 import sandip.example.com.github_login_repo.objects.LoginResponse
 import sandip.example.com.github_login_repo.objects.RepoWatching
 import sandip.example.com.github_login_repo.objects.Repository
 import sandip.example.com.github_login_repo.remote.WebServices
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
+import sandip.example.com.github_login_repo.utils.paging.PaginationRepository
+import sandip.example.com.github_login_repo.utils.paging.PagingBoundaryCallback
 import sandip.example.com.github_login_repo.utils.remoteUtils.NetworkBoundResource
 import sandip.example.com.github_login_repo.utils.remoteUtils.Resource
 import javax.inject.Inject
+import javax.sql.DataSource
 
 
 class AppRepository @Inject constructor(
     private val webservice: WebServices,
     private val executor: AppExecutors,
-    private val dao: GithubDao) {
+    private val dao: GithubDao,
+    pagedListConfig:PagedList.Config) : PaginationRepository<Repository, Repository>(
+    executors = executor,
+    listConfig = pagedListConfig
+)
+    {
+        override fun refreshAPI(): Call<Repository> {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun boundaryCallback(): PagingBoundaryCallback<Repository, Repository> {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun dataSourceFactory(): DataSource.Factory<Int, Repository> {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
+        }
+        override fun refreshOperation(response: Repository?) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
 
 
-    fun authentication(username: String): LiveData<Resource<LoginResponse>> {
+        fun authentication(username: String): LiveData<Resource<LoginResponse>> {
 
         return object : NetworkBoundResource<LoginResponse, LoginResponse>(executor) {
             override fun createCall() = webservice.getUser()

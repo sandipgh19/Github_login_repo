@@ -1,6 +1,7 @@
 package sandip.example.com.github_login_repo.remote
 
 import android.arch.lifecycle.LiveData
+import retrofit2.Call
 import sandip.example.com.github_login_repo.objects.LoginResponse
 import sandip.example.com.github_login_repo.utils.remoteUtils.ApiResponse
 import retrofit2.http.*
@@ -15,6 +16,10 @@ interface WebServices {
 
     @GET("user/repos")
     fun getRepos(): LiveData<ApiResponse<List<Repository>>>
+
+    @GET("user/repos")
+    fun getRepos(@Query("limit") limit: String): Call<Repository>
+
 
     @GET("repos/{owner}/{name}/subscribers")
     fun getRepoWatching(@Path("owner") owner: String,
