@@ -1,50 +1,68 @@
 package sandip.example.com.github_login_repo.repo
 
 import android.arch.lifecycle.LiveData
+import android.arch.paging.PagedList
+import android.support.annotation.MainThread
 import android.util.Log
 import com.google.gson.Gson
-import retrofit2.Call
 import sandip.example.com.github_login_repo.data.GithubDao
 import sandip.example.com.github_login_repo.objects.LoginResponse
 import sandip.example.com.github_login_repo.objects.RepoWatching
 import sandip.example.com.github_login_repo.objects.Repository
 import sandip.example.com.github_login_repo.remote.WebServices
 import sandip.example.com.github_login_repo.utils.helperUtils.AppExecutors
+import sandip.example.com.github_login_repo.utils.paging.Listing
 import sandip.example.com.github_login_repo.utils.paging.PaginationRepository
 import sandip.example.com.github_login_repo.utils.paging.PagingBoundaryCallback
 import sandip.example.com.github_login_repo.utils.remoteUtils.NetworkBoundResource
 import sandip.example.com.github_login_repo.utils.remoteUtils.Resource
 import javax.inject.Inject
-import javax.sql.DataSource
 
 
 class AppRepository @Inject constructor(
     private val webservice: WebServices,
     private val executor: AppExecutors,
     private val dao: GithubDao,
-    pagedListConfig:PagedList.Config) : PaginationRepository<Repository, Repository>(
+    pagedListConfig: PagedList.Config
+) : PaginationRepository<Repository, List<Repository>>(
     executors = executor,
     listConfig = pagedListConfig
-)
-    {
-        override fun refreshAPI(): Call<Repository> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+) {
+    override fun refreshAPI() = webservice.getRepos(limit = 0)
+
+    override fun boundaryCallback(): PagingBoundaryCallback<Repository, List<Repository>> {
+        return AppListBoundaryCallaback(
+            webService = webservice,
+            appExecutors = executor,
+            handleResponse = this::insertResultIntoDb
+        )
+    }
+
+    override fun dataSourceFactory() = dao.loadRepositories()
+
+    override fun refreshOperation(response: List<Repository>?) {
+        deleteAndInsertResultIntoDb(repolist = response)
+    }
+
+    private fun deleteAndInsertResultIntoDb(repolist: List<Repository>?) {
+        repolist?.let {
+            dao.deleteAndInsertData(list = repolist)
         }
+    }
 
-        override fun boundaryCallback(): PagingBoundaryCallback<Repository, Repository> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun insertResultIntoDb(repolist: List<Repository>?) {
+        repolist?.let {
+            dao.insertRepos(repositories = repolist)
         }
+    }
 
-        override fun dataSourceFactory(): DataSource.Factory<Int, Repository> {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-
-        }
-        override fun refreshOperation(response: Repository?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
+    @MainThread
+    fun repositoryList(): Listing<Repository> {
+        return response()
+    }
 
 
-        fun authentication(username: String): LiveData<Resource<LoginResponse>> {
+    fun authentication(username: String): LiveData<Resource<LoginResponse>> {
 
         return object : NetworkBoundResource<LoginResponse, LoginResponse>(executor) {
             override fun createCall() = webservice.getUser()
@@ -63,21 +81,21 @@ class AppRepository @Inject constructor(
     }
 
 
-    fun loadRepos(): LiveData<Resource<List<Repository>>> {
-        return object : NetworkBoundResource<List<Repository>, List<Repository>>(executor) {
-            override fun saveCallResult(item: List<Repository>) {
-                dao.insertDeleteRepo(item)
-            }
-
-            override fun shouldFetch(data: List<Repository>?) = true
-
-            override fun loadFromDb() = dao.loadRepositories()
-
-            override fun createCall() = webservice.getRepos()
-
-
-        }.asLiveData()
-    }
+//    fun loadRepos(): LiveData<Resource<List<Repository>>> {
+//        return object : NetworkBoundResource<List<Repository>, List<Repository>>(executor) {
+//            override fun saveCallResult(item: List<Repository>) {
+//                dao.insertDeleteRepo(item)
+//            }
+//
+//            override fun shouldFetch(data: List<Repository>?) = true
+//
+//            override fun loadFromDb() = dao.loadRepositories()
+//
+//            override fun createCall() = webservice.getRepos()
+//
+//
+//        }.asLiveData()
+//    }
 
     fun loadRepoWatching(owner: String, repo: String): LiveData<Resource<List<RepoWatching>>> {
         return object : NetworkBoundResource<List<RepoWatching>, List<RepoWatching>>(executor) {

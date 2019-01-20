@@ -1,6 +1,7 @@
 package sandip.example.com.github_login_repo.data
 
 import android.arch.lifecycle.LiveData
+import android.arch.paging.DataSource
 import android.arch.persistence.room.*
 import sandip.example.com.github_login_repo.objects.LoginResponse
 import sandip.example.com.github_login_repo.objects.RepoWatching
@@ -10,7 +11,7 @@ import sandip.example.com.github_login_repo.objects.Repository
 interface GithubDao {
 
     @Query("SELECT * FROM login_table")
-    fun fetchLogin() : LiveData<LoginResponse>
+    fun fetchLogin(): LiveData<LoginResponse>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertUser(user: LoginResponse?)
@@ -19,7 +20,7 @@ interface GithubDao {
     fun deleteUser()
 
     @Transaction
-    fun insertDeleteUser(user: LoginResponse?){
+    fun insertDeleteUser(user: LoginResponse?) {
         deleteUser()
         insertUser(user = user)
     }
@@ -37,8 +38,11 @@ interface GithubDao {
     }
 
 
-    @Query("SELECT * FROM Repository ORDER BY stars DESC")
-    fun loadRepositories(): LiveData<List<Repository>>
+//    @Query("SELECT * FROM Repository ORDER BY stars DESC")
+//    fun loadRepositories(): LiveData<List<Repository>>
+
+    @Query("SELECT * FROM Repository ORDER BY indexInResponse ASC")
+    fun loadRepositories(): DataSource.Factory<Int, Repository>
 
 
     @Query(" SELECT * FROM repo_watching")
@@ -57,6 +61,20 @@ interface GithubDao {
         insertRepoWatcher(watcher = watcher)
     }
 
+    @Query("SELECT MAX(indexInResponse) + 1 FROM Repository")
+    fun getNextIndex(): Int
+
+
+    @Transaction
+    fun deleteAndInsertData(list: List<Repository>) {
+        deleteRepos()
+        val start = getNextIndex()
+        val items = list.mapIndexed { index, child ->
+            child.indexInResponse = start + index
+            child
+        }
+        insertRepos(items)
+    }
 
 
 }

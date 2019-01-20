@@ -115,28 +115,28 @@ class RepositoryListFragment : Fragment(), Injectable {
     }
 
     private fun initRepoList(viewModel: RepositoryListViewModel) {
-        viewModel.result.observe(this, Observer { listResource ->
-            // we don't need any null checks here for the adapter since LiveData guarantees that
-            // it won't call us if fragment is stopped or not started.
-            Log.e("Observer", "Data : ${Gson().toJson(listResource)}")
-            binding.resource = listResource
-            binding.count = listResource?.data?.size
-            endProgress()
-            when (listResource?.status) {
-                Status.SUCCESS -> {
-                    viewModel.apiCall = false
-                    adapter.submitList(listResource.data)
-                    endProgress()
-                }
-
-                Status.ERROR -> {
-                    endProgress()
-                    Toast.makeText(requireContext(), getString(R.string.generalError), Toast.LENGTH_LONG).show()
-                }
-
-                Status.LOADING ->{startProgress()}
-            }
-        })
+//        viewModel.result.observe(this, Observer { listResource ->
+//            // we don't need any null checks here for the adapter since LiveData guarantees that
+//            // it won't call us if fragment is stopped or not started.
+//            Log.e("Observer", "Data : ${Gson().toJson(listResource)}")
+//            binding.resource = listResource
+//            binding.count = listResource?.data?.size
+//            endProgress()
+//            when (listResource?.status) {
+//                Status.SUCCESS -> {
+//                    viewModel.apiCall = false
+//                    adapter.submitList(listResource.data)
+//                    endProgress()
+//                }
+//
+//                Status.ERROR -> {
+//                    endProgress()
+//                    Toast.makeText(requireContext(), getString(R.string.generalError), Toast.LENGTH_LONG).show()
+//                }
+//
+//                Status.LOADING ->{startProgress()}
+//            }
+//        })
     }
 
     private fun startProgress() {

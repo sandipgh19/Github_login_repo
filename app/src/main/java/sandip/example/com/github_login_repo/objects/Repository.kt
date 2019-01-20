@@ -32,7 +32,9 @@ data class Repository(
     @field:SerializedName("created_at")
     val createdAt: String?,
     @field:SerializedName("private")
-    val repoType: Boolean?
+    val repoType: Boolean?,
+
+    var indexInResponse: Int = -1
 
 ) {
 

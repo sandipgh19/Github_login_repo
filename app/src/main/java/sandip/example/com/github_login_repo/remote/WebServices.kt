@@ -18,7 +18,7 @@ interface WebServices {
     fun getRepos(): LiveData<ApiResponse<List<Repository>>>
 
     @GET("user/repos")
-    fun getRepos(@Query("limit") limit: String): Call<Repository>
+    fun getRepos(@Query("limit") limit: Int): Call<List<Repository>>
 
 
     @GET("repos/{owner}/{name}/subscribers")

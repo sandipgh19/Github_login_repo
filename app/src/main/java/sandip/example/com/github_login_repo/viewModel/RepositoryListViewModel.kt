@@ -48,7 +48,7 @@ class RepositoryListViewModel @Inject constructor(
         callbacks.notifyCallbacks(this, fieldId, null)
     }
 
-    var result: LiveData<Resource<List<Repository>>>
+    // var result: LiveData<Resource<List<Repository>>>
     var owner = MutableLiveData<String>()
 
     var apiCall = true
@@ -59,11 +59,11 @@ class RepositoryListViewModel @Inject constructor(
     }
 
     init {
-        result = Transformations.switchMap(owner) {
-            when (owner.value) {
-                null -> AbsentedLiveData.create()
-                else -> repo.loadRepos()
-            }
-        }
+//        result = Transformations.switchMap(owner) {
+//            when (owner.value) {
+//                null -> AbsentedLiveData.create()
+//                else -> repo.loadRepos()
+//            }
+//        }
     }
 }

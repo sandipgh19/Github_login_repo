@@ -2,6 +2,10 @@ package sandip.example.com.github_login_repo.di.module
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.arch.lifecycle.LiveData
+import android.arch.paging.DataSource
+import android.arch.paging.LivePagedListBuilder
+import android.arch.paging.PagedList
 import android.arch.persistence.room.Room
 import android.util.Log
 import com.google.gson.Gson
@@ -32,8 +36,10 @@ class AppModule {
     @Provides
     @Singleton
     fun provideDatabaseModule(application: Application): GithubDatabase {
-        return Room.databaseBuilder(application,
-            GithubDatabase::class.java, "gitRepoRoomDatabase")
+        return Room.databaseBuilder(
+            application,
+            GithubDatabase::class.java, "gitRepoRoomDatabase"
+        )
             .fallbackToDestructiveMigration()
             .build()
     }
@@ -56,8 +62,12 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideAppRepository(webservice: WebServices, executor: AppExecutors, dao: GithubDao) =  AppRepository(webservice, executor, dao)
-
+    fun provideAppRepository(
+        webservice: WebServices,
+        executor: AppExecutors,
+        dao: GithubDao,
+        pagedListConfig: PagedList.Config
+    ) = AppRepository(webservice, executor, dao, pagedListConfig)
 
 
     @SuppressLint("NewApi")
@@ -72,7 +82,7 @@ class AppModule {
             .addInterceptor { chain ->
                 // need to intercept the request on the network layer provided by OkHttp
                 val original = chain.request()
-                Log.e("APICALl" ,"Call: ${original.url()}")
+                Log.e("APICALl", "Call: ${original.url()}")
 
 
                 // add request headers
@@ -101,5 +111,31 @@ class AppModule {
         val webService = restAdapter.create(WebServices::class.java)
         WebServiceHolder.instance.setAPIService(webService)
         return webService
+    }
+
+    /**
+     * Pagination injection
+     */
+    @Provides
+    @Singleton
+    fun providePagingConfig(): PagedList.Config {
+        return PagedList.Config.Builder()
+            .setPageSize(10)
+            .setInitialLoadSizeHint(30)
+            .setPrefetchDistance(10)
+            .setEnablePlaceholders(true)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun providePageBuilder(
+        source: DataSource.Factory<Int, Any>,
+        config: PagedList.Config,
+        executor: AppExecutors
+    ): LiveData<PagedList<Any>> {
+        return LivePagedListBuilder(source, config)
+            .setFetchExecutor(executor.diskIO())
+            .build()
     }
 }
