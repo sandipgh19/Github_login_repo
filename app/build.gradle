@@ -36,6 +36,8 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        androidTest.java.srcDirs += "src/test-common/java"
+        test.java.srcDirs += "src/test-common/java"
     }
 
     testOptions {
@@ -100,8 +102,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
     })
-    androidTestImplementation deps.espresso.intents
     androidTestImplementation deps.support.test_runner
+    androidTestImplementation deps.espresso.intents
     testImplementation deps.mockito.core
     testImplementation(deps.arch_core.testing, {
         exclude group: 'com.android.support', module: 'support-compat'

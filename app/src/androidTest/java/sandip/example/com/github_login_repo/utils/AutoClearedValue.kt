@@ -12,7 +12,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import sandip.example.com.github_login_repo.SingleFragmentActivity
+import sandip.example.com.github_login_repo.SingleFragment
 import sandip.example.com.github_login_repo.utils.helperUtils.autoCleared
 
 
@@ -21,7 +21,7 @@ class AutoClearedValueTest {
 
     @Rule
     @JvmField
-    val activityRule = ActivityTestRule(SingleFragmentActivity::class.java, true, true)
+    val activityRule = ActivityTestRule(SingleFragment::class.java, true, true)
 
     private lateinit var testFragment: TestFragment
 

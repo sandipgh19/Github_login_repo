@@ -9,7 +9,7 @@ import android.widget.FrameLayout
 /**
  * Used for testing fragments inside a fake activity.
  */
-class SingleFragmentActivity : AppCompatActivity() {
+class SingleFragment : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
