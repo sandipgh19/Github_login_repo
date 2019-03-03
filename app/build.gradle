@@ -17,7 +17,8 @@ android {
         versionCode 1
         versionName "1.0"
         dataBinding.enabled = true
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        testInstrumentationRunner "sandip.example.com.github_login_repo.utils.AppRunnerTest"
 
         androidExtensions {
             experimental = true
@@ -35,6 +36,12 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+        androidTest.java.srcDirs += "src/test-common/java"
+        test.java.srcDirs += "src/test-common/java"
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 
     compileOptions {
@@ -87,5 +94,52 @@ dependencies {
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.3'
     implementation 'com.github.lsjwzh.RecyclerViewPager:lib:v1.1.2'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    androidTestImplementation(deps.espresso.core, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    })
+    androidTestImplementation(deps.espresso.contrib, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+    })
+    androidTestImplementation deps.support.test_runner
+    androidTestImplementation deps.espresso.intents
+    testImplementation deps.mockito.core
+    testImplementation(deps.arch_core.testing, {
+        exclude group: 'com.android.support', module: 'support-compat'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude group: 'com.android.support', module: 'support-core-utils'
+    })
+    androidTestImplementation deps.arch_core.testing
+    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
+    androidTestImplementation deps.mockito.core, { exclude group: 'net.bytebuddy' }
+
+    task fullCoverageReport(type: JacocoReport) {
+        dependsOn 'createDebugCoverageReport'
+        dependsOn 'testDebugUnitTest'
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*',
+                          '**/*Test*.*', 'android/**/*.*',
+                          '**/*_MembersInjector.class',
+                          '**/Dagger*Component.class',
+                          '**/Dagger*Component$Builder.class',
+                          '**/*_*Factory.class',
+                          '**/*ComponentImpl.class',
+                          '**/*SubComponentBuilder.class']
+        def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
+        def mainSrc = "${project.projectDir}/src/main/java"
+
+        sourceDirectories = files([mainSrc])
+        classDirectories = files([debugTree])
+        executionData = fileTree(dir: "$buildDir", includes: [
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/code-coverage/connected/*coverage.ec"
+        ])
+    }
+
 
 }
